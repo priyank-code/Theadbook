@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 // CORS Policy Configuration for Production Frontend
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:5173",
+  "http://localhost:5173", "https://theadbook.vercel.app",
   process.env.FRONTEND_URL || "https://theadbook.com",
 ];
 
