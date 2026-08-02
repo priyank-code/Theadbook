@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Playlist = require('../models/Playlist');
+const Playlist = require('../models/PlayList');
 const verifyToken = require('../middleware/authMiddleware');
 
 // 1. Get All Playlists
