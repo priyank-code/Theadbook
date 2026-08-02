@@ -70,12 +70,10 @@ router.get("/stats", verifyToken, async (req, res) => {
     });
   } catch (err) {
     console.error("[Dashboard Stats Error]:", err.message);
-    res
-      .status(500)
-      .json({
-        status: "error",
-        message: "Server error while fetching dashboard stats.",
-      });
+    res.status(500).json({
+      status: "error",
+      message: "Server error while fetching dashboard stats.",
+    });
   }
 });
 

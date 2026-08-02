@@ -18,6 +18,7 @@ export default function Login({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Sign In to Dashboard");
 
   const loginStore = useAuthStore((state) => state.login);
 
@@ -38,10 +39,23 @@ export default function Login({ onLogin }) {
     }
 
     setIsLoading(true);
+    setLoadingText("Connecting to server (cold start can take up to 6s)...");
+
+    const attemptLogin = async () => {
+      return await API.post("/auth/login", { email, password });
+    };
 
     try {
-      // Real backend API call to Node.js backend
-      const response = await API.post("/auth/login", { email, password });
+      let response;
+      try {
+        // First attempt
+        response = await attemptLogin();
+      } catch (firstErr) {
+        // If it fails due to cold start timeout/network issue, wait 4 seconds and auto-retry once
+        setLoadingText("Waking up server, please wait...");
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        response = await attemptLogin();
+      }
 
       const { token, user } = response.data;
 
@@ -56,6 +70,7 @@ export default function Login({ onLogin }) {
       }
     } catch (err) {
       setIsLoading(false);
+      setLoadingText("Sign In to Dashboard");
       setError(
         err.response?.data?.message || "Invalid credentials or server error!",
       );
@@ -158,7 +173,7 @@ export default function Login({ onLogin }) {
               className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-orange-600/25 flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isLoading ? (
-                <span>Authenticating Node...</span>
+                <span className="animate-pulse">{loadingText}</span>
               ) : (
                 <>
                   <span>Sign In to Dashboard</span>

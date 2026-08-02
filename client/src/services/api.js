@@ -2,7 +2,9 @@ import axios from "axios";
 import useAuthStore from "../store/useAuthStore";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://theadbook-backend.vercel.app/api",
+  withCredentials: true,
+  timeout: 10000, 
 });
 
 // Request interceptor to attach JWT token securely
